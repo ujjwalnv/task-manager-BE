@@ -28,9 +28,8 @@ router.post('/', async (req, res) => {
 
 // Get Tasks Assigned to a User API
 router.get('/assigned', async (req, res) => {
-    const userId = req.get("user_id"); // Assuming user ID is sent in the 'user-id' header
-  
-    if (!userId) {
+    const userId = req.get("user_id");
+    if(!userId) {
       return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'User ID is missing in the request header' });
     }
   
@@ -44,5 +43,27 @@ router.get('/assigned', async (req, res) => {
         return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to fetch assigned tasks' });
       }
   });
+  
+
+// Get Tasks Created by a User API
+router.get('/created', async (req, res) => {
+    const userId = req.get("user_id");
+    
+    if(!userId) {
+        return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'User ID is missing in the request header' });
+    }
+
+    try {
+      const tasks = await prisma.task.findMany({
+        where: { creatorId: parseInt(userId) },
+      });
+      return res.json(tasks);
+    } catch (error) {
+      console.error('Error fetching created tasks:', error);
+      return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to fetch created tasks' });
+    }
+  });
+
+  
 
 export default router;
