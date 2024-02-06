@@ -1,0 +1,48 @@
+import { PrismaClient } from '@prisma/client';
+import express from 'express'
+import { constants } from 'http2';
+
+const router = express.Router();
+const prisma = new PrismaClient();
+
+// Create Task API
+router.post('/', async (req, res) => {
+    const { title, description, dueDate, assignees } = req.body;
+    
+    try {
+      const task = await prisma.task.create({
+        data: {
+          title,
+          description,
+          dueDate,
+          creator: { connect: { id: parseInt(req.body.creator_id) } },
+          assignees: { connect: assignees.map((id: number) => ({ id })) },
+        },
+      });
+      res.json(task);
+    } catch (error) {
+      console.error('Error creating task:', error);
+      res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to create task' });
+    }
+  });
+
+// Get Tasks Assigned to a User API
+router.get('/assigned', async (req, res) => {
+    const userId = req.get("user_id"); // Assuming user ID is sent in the 'user-id' header
+  
+    if (!userId) {
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'User ID is missing in the request header' });
+    }
+  
+    try {
+        const tasks = await prisma.task.findMany({
+          where: { assignees: { some: { id: parseInt(userId) } } },
+        });
+        return res.json(tasks);
+      } catch (error) {
+        console.error('Error fetching assigned tasks:', error);
+        return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to fetch assigned tasks' });
+      }
+  });
+
+export default router;

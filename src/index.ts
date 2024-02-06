@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import bodyParser from "body-parser";
 import { constants } from "http2";
 import userRoute from "./routes/userRoute";
+import taskRoute from "./routes/taskRoute";
 
 const prisma = new PrismaClient();
 const app = express()
@@ -16,6 +17,8 @@ app.get('/ping', (req, res) => {
 
 // User routes
 app.use('/user', userRoute)
+// Task routes
+app.use('/tasks', taskRoute)
 
 
 
