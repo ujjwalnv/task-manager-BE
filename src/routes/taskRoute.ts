@@ -1,6 +1,7 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import express from 'express'
 import { constants } from 'http2';
+import { sendTaskAssignedMail } from 'mailer/assignedTaskMailer';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -22,6 +23,9 @@ router.post('/', async (req, res) => {
           assignees: { connect: assignees.map((id: number) => ({ id })) },
         },
       });
+
+      // Send email to Assignees
+      sendTaskAssignedMail(title, assignees);
       return res.json(task);
     } catch (error) {
       console.error('Error creating task:', error);
@@ -33,7 +37,7 @@ router.post('/', async (req, res) => {
 router.get('/assigned', async (req, res) => {
     const userId = req.get("user_id");
     if(!userId) {
-      return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'User ID is missing in the request header' });
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'User ID is missing in the request headers.' });
     }
   
     try {
@@ -43,7 +47,7 @@ router.get('/assigned', async (req, res) => {
         return res.json(tasks);
       } catch (error) {
         console.error('Error fetching assigned tasks:', error);
-        return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to fetch assigned tasks' });
+        return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to fetch assigned tasks.' });
       }
   });
   
@@ -91,12 +95,7 @@ router.get('/filter', async (req, res) => {
 
     if(dueDate) queryData.dueDate = new Date(dueDate);
     if(creatorId) queryData.creatorId= parseInt(creatorId);
-    if(assigneeId) queryData.assignees = {
-                                            some:{
-                                                id: parseInt(assigneeId)
-                                            }
-                                        }
-    
+    if(assigneeId) queryData.assignees = { some:{ id: parseInt(assigneeId) } }
 
     try {
       const tasks = await prisma.task.findMany({
