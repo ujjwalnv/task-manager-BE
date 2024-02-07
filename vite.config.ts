@@ -21,7 +21,7 @@ export default defineConfig({
 
       // Optional, default: 'viteNodeApp'
       // the name of named export of you app from the appPath file
-      exportName: "surveySenseApp",
+      exportName: "taskManagerApp",
 
       // Optional, default: false
       // if you want to init your app on boot, set this to true

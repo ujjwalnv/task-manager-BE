@@ -20,8 +20,12 @@
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "useUnknownInCatchVariables": false,
-    "types": ["vite/client"],
+    "types": ["vite/client", "jest", "node", "@types/jest"],
   },
-  "include": ["src/**/*.ts"],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": ["src/**/*.ts", "./tests/**/*"],
   "exclude": ["node_modules"],
 }

@@ -29,4 +29,4 @@ if (import.meta.env?.PROD) {
     });
   }
   
-export const surveySenseApp = app;
+export const taskManagerApp = app;
