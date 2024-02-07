@@ -9,6 +9,9 @@ const prisma = new PrismaClient();
 router.post('/', async (req, res) => {
     const { title, description, dueDate, assignees } = req.body;
     
+    if(!title || !description || !dueDate || !assignees || assignees.length === 0)
+        return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'Mandatory fields are missing.' });
+
     try {
       const task = await prisma.task.create({
         data: {
@@ -19,10 +22,10 @@ router.post('/', async (req, res) => {
           assignees: { connect: assignees.map((id: number) => ({ id })) },
         },
       });
-      res.json(task);
+      return res.json(task);
     } catch (error) {
       console.error('Error creating task:', error);
-      res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to create task' });
+      return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to create task' });
     }
   });
 
