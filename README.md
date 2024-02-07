@@ -3,13 +3,34 @@
 
 A Task Manager make it easy for users to create, assign and track tasks to improve team productivity.
 
+## Installation
 
+- Clone this repository
+
+```bash
+  git clone https://github.com/ujjwalnv/task-manager-BE.git
+```
+
+- Go to task-manager-BE repository and install dependencies
+
+```bash
+  cd task-manager-BE
+  npm install
+```
+
+- Rename sampleEnv to .env
+- Add username, password and Database name in the required place for PostgreSQL Database
+- Run the backend
+
+```bash
+  npm run dev
+```
 
 ## API Reference
 
 #### Create a user
 
-```http
+```
   POST /user
 ```
 
@@ -20,7 +41,7 @@ A Task Manager make it easy for users to create, assign and track tasks to impro
 
 #### Create a task
 
-```http
+```
   POST /tasks
 ```
 
@@ -38,7 +59,7 @@ A Task Manager make it easy for users to create, assign and track tasks to impro
 
 #### Get tasks assigned to a user
 
-```http
+```
   GET /tasks/assigned
 ```
 
@@ -48,7 +69,7 @@ A Task Manager make it easy for users to create, assign and track tasks to impro
 
 #### Get tasks created by a user
 
-```http
+```
   GET /tasks/created
 ```
 | Headers | Type     | Description                       |
@@ -57,7 +78,7 @@ A Task Manager make it easy for users to create, assign and track tasks to impro
 
 #### Get filtered tasks based on due date, creator & assignees
 
-```http
+```
   GET /tasks/filter
 ```
 | Params | Type     | Description                       |
