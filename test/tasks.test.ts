@@ -1,5 +1,5 @@
 import request from 'supertest'
-import {taskManagerApp} from '../src/index'; // Assuming your Express app is exported from app.ts
+import {taskManagerApp} from '../src/index';
 
 describe('Create Task API', () => {
   it('should create a new task', async () => {
