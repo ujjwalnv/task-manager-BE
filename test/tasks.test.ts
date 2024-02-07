@@ -12,7 +12,7 @@ describe('Create Task API', () => {
 
     const response = await request(taskManagerApp)
       .post('/tasks')
-      .set('creator_id', '3')
+      .set('user_id', '3')
       .send(taskData)
       .expect(200);
 

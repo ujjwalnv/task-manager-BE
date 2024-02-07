@@ -26,6 +26,12 @@ A Task Manager make it easy for users to create, assign and track tasks to impro
   npm run dev
 ```
 
+- Run tests
+
+```bash
+  npm run test
+```
+
 ## API Reference
 
 #### Create a user
