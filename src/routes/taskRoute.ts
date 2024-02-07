@@ -9,8 +9,8 @@ const prisma = new PrismaClient();
 // Create Task API
 router.post('/', async (req, res) => {
     const { title, description, dueDate, assignees } = req.body;
-    const creator_id = req.get('creator_id')
-    if(!creator_id || !title || !description || !dueDate || !assignees || assignees.length === 0)
+    const user_id = req.get('user_id')
+    if(!user_id || !title || !description || !dueDate || !assignees || assignees.length === 0)
         return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'Mandatory fields are missing.' });
 
     try {
@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
           title,
           description,
           dueDate,
-          creator: { connect: { id: parseInt(creator_id) } },
+          creator: { connect: { id: parseInt(user_id) } },
           assignees: { connect: assignees.map((id: number) => ({ id })) },
         },
       });
