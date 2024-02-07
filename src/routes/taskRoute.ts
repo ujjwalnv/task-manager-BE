@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import express from 'express'
 import { constants } from 'http2';
 
@@ -64,6 +64,46 @@ router.get('/created', async (req, res) => {
     }
   });
 
-  
+// Filter Tasks API
+router.get('/filter', async (req, res) => {
+    const dueDate = req.query['dueDate'];
+    const creatorId = req.query['creatorId'];
+    const assigneeId = req.query['assigneeId'];
+    
+    if(dueDate){
+        if(typeof(dueDate) !== "string")
+            return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'Due date is wrong' });
+    }
+
+    if(creatorId){
+        if(typeof(creatorId) !== "string")
+            return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'Due date is wrong' });
+    }
+
+    if(assigneeId){
+        if(typeof(assigneeId) !== "string")
+            return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({ error: 'Due date is wrong' });
+    }
+    const queryData: Prisma.TaskWhereInput = {}
+
+    if(dueDate) queryData.dueDate = new Date(dueDate);
+    if(creatorId) queryData.creatorId= parseInt(creatorId);
+    if(assigneeId) queryData.assignees = {
+                                            some:{
+                                                id: parseInt(assigneeId)
+                                            }
+                                        }
+    
+
+    try {
+      const tasks = await prisma.task.findMany({
+        where: queryData,
+      });
+      return res.json(tasks);
+    } catch (error) {
+      console.error('Error filtering tasks:', error);
+      return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Unable to filter tasks' });
+    }
+  });
 
 export default router;
