@@ -31,3 +31,18 @@ describe('Create Task API', () => {
       .expect(400); 
   });
 });
+
+describe('Get Assigned Tasks API', () => {
+    it('should give assigned tasks for the user_id',async () => {
+        const response = await request(taskManagerApp)
+          .get('/tasks/assigned')
+          .set('user_id', '2')
+          .expect(200)
+    })
+
+    it('should return 400 if required fields are missing',async () => {
+        const response = await request(taskManagerApp)
+          .get('/tasks/assigned') // Removed user_id from header
+          .expect(400)
+    })
+})
